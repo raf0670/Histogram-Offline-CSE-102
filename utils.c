@@ -9,7 +9,7 @@
 double generate_normal(double mu, double sigma) {
   double U1 = (double)rand() / (double)RAND_MAX;
   double U2 = (double)rand() / (double)RAND_MAX;
-  double X1 = sqrt(-2 * log(U1)) * cos(2 * PI * U2);
+  double X1 = sqrt(-2 * log(U1+1e-30)) * cos(2 * PI * U2);
   return mu + sigma * X1;
 }
 
