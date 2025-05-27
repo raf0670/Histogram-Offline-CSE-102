@@ -9,7 +9,13 @@
 #define MAX_STARS 50
 
 double array[MAX_SIZE];
-// int bin_counts[MAX_BINS];
+int bin_counts[MAX_BINS];
+double array_copy[MAX_SIZE];
+
+int cmpfunc(const void *a, const void *b) {
+    double diff = (*(double *)a - *(double *)b);
+    return (diff > 0) - (diff < 0);
+}
 
 int main() {
     // start
@@ -94,12 +100,12 @@ int main() {
         }
         
         // invalid cmd check
-        else if(strcmp(s, "set") != 0 && strcmp(s, "min") != 0 && strcmp(s, "max") != 0 && strcmp(s, "mean") != 0 && strcmp(s, "stddev") != 0 && strcmp(s, "exit") != 0 && strcmp(s, "hist") != 0 && strcmp(s, "summary") != 0 && strcmp(s, "help") != 0) {
+        else if(strcmp(s, "median") != 0 && strcmp(s, "set") != 0 && strcmp(s, "min") != 0 && strcmp(s, "max") != 0 && strcmp(s, "mean") != 0 && strcmp(s, "stddev") != 0 && strcmp(s, "exit") != 0 && strcmp(s, "hist") != 0 && strcmp(s, "summary") != 0 && strcmp(s, "help") != 0) {
             printf("Unknown command. Type 'help' for list of commands");
         }
         
         // initialization check
-        else if((array[0] == 0 && array[1] == 0) && (strcmp(s, "set") == 0 || strcmp(s, "min") == 0 || strcmp(s, "max") == 0 || strcmp(s, "mean") == 0 || strcmp(s, "stddev") == 0 || strcmp(s, "hist") == 0 || strcmp(s, "summary") == 0 || strcmp(s, "help") == 0)) {
+        else if((array[0] == 0 && array[1] == 0) && (strcmp(s, "median") != 0 || strcmp(s, "set") == 0 || strcmp(s, "min") == 0 || strcmp(s, "max") == 0 || strcmp(s, "mean") == 0 || strcmp(s, "stddev") == 0 || strcmp(s, "hist") == 0 || strcmp(s, "summary") == 0 || strcmp(s, "help") == 0)) {
             printf("Array not initialized. Use 'set' command first.");
             continue;
         }
@@ -173,11 +179,27 @@ int main() {
             }
         }
 
-        // median
         else if(strcmp(s, "median") == 0) {
-            
+            // Copy original array
+            for(int i = 0; i < size; i++) {
+                array_copy[i] = array[i];
+            }
+
+            // Sort using qsort
+            qsort(array_copy, size, sizeof(double), cmpfunc);
+
+            // median calc
+            double median;
+            if(size % 2 == 0) {
+                median = (array_copy[size/2 - 1] + array_copy[size/2]) / 2.0;
+            } else {
+            median = array_copy[size/2];
+            }
+
+            // median printf
+            printf("%-10s", "Median"); printf(":"); printf("%10.4lf", median);
         }
-        
+
         // exit
         else if(strcmp(s, "exit") == 0) {
             break;
